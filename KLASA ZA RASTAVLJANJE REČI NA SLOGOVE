@@ -8,6 +8,8 @@ package lang;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import static lang.Pismo.Cyr;
+import static lang.Pismo.Lat;
 
 /**
  *
@@ -15,19 +17,34 @@ import java.util.Arrays;
  */
 public class Slog {
     
-    final String samoglasnici="a,e,i,o,u";
-    final String sonati="j,v,r,m,l,lj,n,nj";
-    final String slogotvorniSonati="r,l,n";
-    final String suglasnici="b,v,g,d,đ,dj,ž,z,j,k,l,lj,m,n,nj,p,r,s,t,ć,f,h,c,č,dž,š";
-    final String konsonanti="b,g,d,z,ž,đ,dž,p,k,t,s,š,ć,č,h,f,c";
-    final String zvucniKonsonanti="b,g,d,z,ž,đ,dž";
-    final String bezZvucniKonsonanti="p,k,t,s,š,ć,č,h,f,c";
+    final String samoglasniciL="a,e,i,o,u";
+    final String sonatiL="j,v,r,m,l,lj,n,nj";
+    final String slogotvorniSonatiL="r,l,n";
+    final String suglasniciL="b,v,g,d,đ,dj,ž,z,j,k,l,lj,m,n,nj,p,r,s,t,ć,f,h,c,č,dž,š";
+    final String konsonantiL="b,g,d,z,ž,đ,dž,p,k,t,s,š,ć,č,h,f,c";
+    final String zvucniKonsonantiL="b,g,d,z,ž,đ,dž";
+    final String bezZvucniKonsonantiL="p,k,t,s,š,ć,č,h,f,c";
+    
+    final String samoglasniciC="а,е,и,о,у";
+    final String sonatiC="ј,в,р,м,л,љ,н,њ";
+    final String slogotvorniSonatiC="р,л,н";
+    final String suglasniciC="б,в,г,д,ђ,дј,ж,з,ј,к,л,љ,м,н,њ,п,р,с,т,ћ,ф,х,ц,ч,џ,ш";
+    final String konsonantiC="б,г,д,з,ж,ђ,џ,п,к,т,с,ш,ћ,ч,х,ф,ц";
+    final String zvucniKonsonantiC="б,г,д,з,ж,ђ,џ";
+    final String bezZvucniKonsonantiC="п,к,т,с,ш,ћ,ч,х,ф,ц";
+    
+    Pismo p;
+    
     private String rec;
     private String slovo;
     private StringBuilder recPodeljenaNaSlogove=new StringBuilder();
     public void setRec(String r)
         {
         this.rec=r;
+        if(isCyrilic(this.rec))
+             p=Cyr;
+        else
+            p=Lat;
         }
     public String getRec()
         {
@@ -35,58 +52,140 @@ public class Slog {
         }
     public Slog()
         {
+            
         }
-    public boolean isSamoglasnik(String s)
+    private boolean isCyrilic(String word)
     {
-        if(samoglasnici.indexOf(s.toLowerCase())==-1)
+    int latCounter=0;
+    int cyrCounter=0;
+    char c;
+        for (int i = 0; i < word.length(); i++) {
+            c=word.charAt(i);
+            if(Character.UnicodeBlock.CYRILLIC.equals(Character.UnicodeBlock.of(c)))
+            {
+            cyrCounter++;
+            }
+            else
+            {
+            latCounter++;
+            }  
+            if(latCounter>cyrCounter)
+                return false;
+            else
+                return true;
+        }
+        
+    return true;
+    }
+    public boolean isSamoglasnikL(String s)
+    {
+        if(samoglasniciL.indexOf(s.toLowerCase())==-1)
             return false;
         else 
-            return true;    
+            return true; 
+        
     }
        
-    public boolean isSonat(String s)
+    public boolean isSonatL(String s)
     {
-        if(sonati.indexOf(s.toLowerCase())==-1)
+        if(sonatiL.indexOf(s.toLowerCase())==-1)
             return false;
         else 
             return true;    
     }
     
-    public boolean isSlogotvorniSonati(String s)
+    public boolean isSlogotvorniSonatiL(String s)
     {
-        if(slogotvorniSonati.indexOf(s.toLowerCase())==-1)
+        if(slogotvorniSonatiL.indexOf(s.toLowerCase())==-1)
             return false;
         else 
             return true;    
     }
     
-    public boolean isSuglasnik(String s)
+    public boolean isSuglasnikL(String s)
     {
-        if(suglasnici.indexOf(s.toLowerCase())==-1)
+        if(suglasniciL.indexOf(s.toLowerCase())==-1)
             return false;
         else 
             return true;    
     }
     
-    public boolean isKonsonanti(String s)
+    public boolean isKonsonantiL(String s)
     {
-        if(konsonanti.indexOf(s.toLowerCase())==-1)
+        if(konsonantiL.indexOf(s.toLowerCase())==-1)
             return false;
         else 
             return true;    
     }
     
-    public boolean isZvucniKonsonanti(String s)
+    public boolean isZvucniKonsonantiL(String s)
     {
-        if(zvucniKonsonanti.indexOf(s.toLowerCase())==-1)
+        if(zvucniKonsonantiL.indexOf(s.toLowerCase())==-1)
             return false;
         else 
             return true;    
     }
     
-    public boolean isBezZvucniKonsonanti(String s)
+    public boolean isBezZvucniKonsonantiL(String s)
     {
-        if(bezZvucniKonsonanti.indexOf(s.toLowerCase())==-1)
+        if(bezZvucniKonsonantiL.indexOf(s.toLowerCase())==-1)
+            return false;
+        else 
+            return true;    
+    }
+    
+        public boolean isSamoglasnikC(String s)
+    {
+        if(samoglasniciC.indexOf(s.toLowerCase())==-1)
+            return false;
+        else 
+            return true; 
+        
+    }
+       
+    public boolean isSonatC(String s)
+    {
+        if(sonatiC.indexOf(s.toLowerCase())==-1)
+            return false;
+        else 
+            return true;    
+    }
+    
+    public boolean isSlogotvorniSonatiC(String s)
+    {
+        if(slogotvorniSonatiC.indexOf(s.toLowerCase())==-1)
+            return false;
+        else 
+            return true;    
+    }
+    
+    public boolean isSuglasnikC(String s)
+    {
+        if(suglasniciC.indexOf(s.toLowerCase())==-1)
+            return false;
+        else 
+            return true;    
+    }
+    
+    public boolean isKonsonantiC(String s)
+    {
+        if(konsonantiC.indexOf(s.toLowerCase())==-1)
+            return false;
+        else 
+            return true;    
+    }
+    
+    public boolean isZvucniKonsonantiC(String s)
+    {
+        if(zvucniKonsonantiC.indexOf(s.toLowerCase())==-1)
+            return false;
+        else 
+            return true;    
+    }
+    
+    public boolean isBezZvucniKonsonantiC(String s)
+    {
+        if(bezZvucniKonsonantiC.indexOf(s.toLowerCase())==-1)
             return false;
         else 
             return true;    
@@ -108,37 +207,76 @@ public class Slog {
             c=this.rec.charAt(i);
             slovo=String.valueOf(c);
             recPodeljenaNaSlogove=recPodeljenaNaSlogove.append(c);
-                    if(isSamoglasnik(slovo) && i<this.rec.length()-2)
-                    recPodeljenaNaSlogove=recPodeljenaNaSlogove.append("-");
+            
+                    if(this.p==Cyr)
+                    {
+                            if(isSamoglasnikC(slovo) && i<this.rec.length()-2)
+                            recPodeljenaNaSlogove=recPodeljenaNaSlogove.append("-");
+                    }
+                    else 
+                    {
+                            if(isSamoglasnikL(slovo) && i<this.rec.length()-2)
+                            recPodeljenaNaSlogove=recPodeljenaNaSlogove.append("-");
+                    }   
+
+                    
            }
-    return this.recPodeljenaNaSlogove.toString();
+        
+    return podeliNaSlogovePoSuglasnicima(this.recPodeljenaNaSlogove.toString());
     }
     
-    private String podeliNaSlogovePoSuglasnicima(String prethodnoPodeljeno)
+    private String podeliNaSlogovePoSuglasnicima(String prethodnoPodeljenoPoSamoglasnicima)
     {
         /*
         ponovno deljenje vec podeljene reci po suglasnicima 
         kako bi smo identifikovali pogresno podeljene slogove
         u kojima su ostali suglasnici jedan do drugug
         */
-        String[] t=prethodnoPodeljeno.split("-");
-        
-        for (int i = 1; i < t.length; i++) {
+        String[] t=prethodnoPodeljenoPoSamoglasnicima.split("-");
+        String iznovaDeljeno="";
+        for (int i = 1;i < t.length; i++) {
          
             char c;
-            //proveraj mi samo one slogove koji imaju 3 slova 
-            //da li u tim slogovima postoje suglasnici koji su spojeni
-             
-            for (int j = 0; j < t[i].length(); j++) {
-                
-            }
             
-            
-        }
+            /*proveraj mi samo one slogove koji imaju 2 slova i vise 
+              da li u tim slogovima postoje suglasnici koji su spojeni ako 
+              postoje razdvojiti ih tako da ne budu u istom slogu*/
+            if(t[i].length()>=2)
+            {
+                     if(this.p == Cyr)
+                     {
+                            /*ukoliko su u slogu dve suglasnika jedan do drugog
+                              prebaci prvi suglasnik u prethodni slog za cirilicu*/
+                            if(isSuglasnikC(t[i].substring(0, 1)) && isSuglasnikC(t[i].substring(1, 2)))
+                            {
+                            t[i-1]=t[i-1]+t[i].substring(0, 1);
+                            t[i]= t[i].substring(1, t[i].length());
+                            }
+                     }
+                     else
+                     {
+                             /*ukoliko su u slogu dve suglasnika jedan do drugog
+                              prebaci prvi suglasnik u prethodni slog za latinicu*/
+                             if(isSuglasnikL(t[i].substring(0, 1)) && isSuglasnikL(t[i].substring(1, 2)))
+                            {
+                            t[i-1]=t[i-1]+t[i].substring(0, 1);
+                            t[i]= t[i].substring(1, t[i].length());
+                            }
 
+                     }    
+            
+            }
+             
+     }
+        for (int i = 0; i < t.length; i++) {
+            
+            iznovaDeljeno=iznovaDeljeno+t[i];
+            if(i!=t.length-1)
+            iznovaDeljeno=iznovaDeljeno+"-" ;  
+        }
         
         
-        return prethodnoPodeljeno;
+        return iznovaDeljeno;
     }
     
 
