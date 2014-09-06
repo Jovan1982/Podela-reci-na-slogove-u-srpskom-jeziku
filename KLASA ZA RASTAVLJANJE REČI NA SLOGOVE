@@ -1,0 +1,153 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package lang;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+/**
+ *
+ * @author Jovo
+ */
+public class Slog {
+    
+    final String samoglasnici="a,e,i,o,u";
+    final String sonati="j,v,r,m,l,lj,n,nj";
+    final String slogotvorniSonati="r,l,n";
+    final String suglasnici="b,v,g,d,đ,dj,ž,z,j,k,l,lj,m,n,nj,p,r,s,t,ć,f,h,c,č,dž,š";
+    final String konsonanti="b,g,d,z,ž,đ,dž,p,k,t,s,š,ć,č,h,f,c";
+    final String zvucniKonsonanti="b,g,d,z,ž,đ,dž";
+    final String bezZvucniKonsonanti="p,k,t,s,š,ć,č,h,f,c";
+    private String rec;
+    private String slovo;
+    private StringBuilder recPodeljenaNaSlogove=new StringBuilder();
+    public void setRec(String r)
+        {
+        this.rec=r;
+        }
+    public String getRec()
+        {
+        return this.rec;
+        }
+    public Slog()
+        {
+        }
+    public boolean isSamoglasnik(String s)
+    {
+        if(samoglasnici.indexOf(s)==-1)
+            return false;
+        else 
+            return true;    
+    }
+       
+    public boolean isSonat(String s)
+    {
+        if(sonati.indexOf(s)==-1)
+            return false;
+        else 
+            return true;    
+    }
+    
+    public boolean isSonattvornoSlog(String s)
+    {
+        if(slogotvorniSonati.indexOf(s)==-1)
+            return false;
+        else 
+            return true;    
+    }
+    
+    public boolean isSuglasnik(String s)
+    {
+        if(suglasnici.indexOf(s)==-1)
+            return false;
+        else 
+            return true;    
+    }
+    
+    public boolean isKonsonanti(String s)
+    {
+        if(konsonanti.indexOf(s)==-1)
+            return false;
+        else 
+            return true;    
+    }
+    
+    public boolean isZvucniKonsonanti(String s)
+    {
+        if(zvucniKonsonanti.indexOf(s)==-1)
+            return false;
+        else 
+            return true;    
+    }
+    
+    public boolean isBezZvucniKonsonanti(String s)
+    {
+        if(bezZvucniKonsonanti.indexOf(s)==-1)
+            return false;
+        else 
+            return true;    
+    }
+    
+    public String podeliNaSlogovePoSamoglasnicima()
+    {
+        /*
+        prvobitna podela reci na slogove gde se rec 
+        na slogove deli samo po samoglasnicima
+        */
+        
+        //ukoliko je rac od 3 slova ili manje nemoj je rastavljati vrati celu rec
+          if(this.rec.length()<=3)
+            return this.rec;
+          
+    char c;
+        for (int i = 0; i < this.rec.length(); i++) {
+            c=this.rec.charAt(i);
+            slovo=String.valueOf(c);
+            recPodeljenaNaSlogove=recPodeljenaNaSlogove.append(c);
+                    if(isSamoglasnik(slovo) && i<this.rec.length()-2)
+                    recPodeljenaNaSlogove=recPodeljenaNaSlogove.append("-");
+           }
+    return this.recPodeljenaNaSlogove.toString();
+    }
+    
+    private String podeliNaSlogovePoSuglasnicima(String prethodnoPodeljeno)
+    {
+        /*
+        ponovno deljenje vec podeljene reci po suglasnicima 
+        kako bi smo identifikovali pogresno podeljene slogove
+        u kojima su ostali suglasnici jedan do drugug
+        */
+        String[] t=prethodnoPodeljeno.split("-");
+        
+        for (int i = 1; i < t.length; i++) {
+         
+            char c;
+            //proveraj mi samo one slogove koji imaju 3 slova 
+            //da li u tim slogovima postoje suglasnici koji su spojeni
+             
+            for (int j = 0; j < t[i].length(); j++) {
+                
+            }
+            
+            
+        }
+
+        
+        
+        return prethodnoPodeljeno;
+    }
+    
+
+    
+    
+    
+    
+        
+    
+    
+    
+}
