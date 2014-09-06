@@ -38,7 +38,7 @@ public class Slog {
         }
     public boolean isSamoglasnik(String s)
     {
-        if(samoglasnici.indexOf(s)==-1)
+        if(samoglasnici.indexOf(s.toLowerCase())==-1)
             return false;
         else 
             return true;    
@@ -46,15 +46,15 @@ public class Slog {
        
     public boolean isSonat(String s)
     {
-        if(sonati.indexOf(s)==-1)
+        if(sonati.indexOf(s.toLowerCase())==-1)
             return false;
         else 
             return true;    
     }
     
-    public boolean isSonattvornoSlog(String s)
+    public boolean isSlogotvorniSonati(String s)
     {
-        if(slogotvorniSonati.indexOf(s)==-1)
+        if(slogotvorniSonati.indexOf(s.toLowerCase())==-1)
             return false;
         else 
             return true;    
@@ -62,7 +62,7 @@ public class Slog {
     
     public boolean isSuglasnik(String s)
     {
-        if(suglasnici.indexOf(s)==-1)
+        if(suglasnici.indexOf(s.toLowerCase())==-1)
             return false;
         else 
             return true;    
@@ -70,7 +70,7 @@ public class Slog {
     
     public boolean isKonsonanti(String s)
     {
-        if(konsonanti.indexOf(s)==-1)
+        if(konsonanti.indexOf(s.toLowerCase())==-1)
             return false;
         else 
             return true;    
@@ -78,7 +78,7 @@ public class Slog {
     
     public boolean isZvucniKonsonanti(String s)
     {
-        if(zvucniKonsonanti.indexOf(s)==-1)
+        if(zvucniKonsonanti.indexOf(s.toLowerCase())==-1)
             return false;
         else 
             return true;    
@@ -86,7 +86,7 @@ public class Slog {
     
     public boolean isBezZvucniKonsonanti(String s)
     {
-        if(bezZvucniKonsonanti.indexOf(s)==-1)
+        if(bezZvucniKonsonanti.indexOf(s.toLowerCase())==-1)
             return false;
         else 
             return true;    
