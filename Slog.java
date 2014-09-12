@@ -23,12 +23,14 @@ public class Slog {
     final String konsonanti = "b,g,d,z,ž,đ,dž,p,k,t,s,š,ć,č,h,f,c,б,г,д,з,ж,ђ,џ,п,к,т,с,ш,ћ,ч,х,ф,ц";
     final String zvucniKonsonanti = "b,g,d,z,ž,đ,dž,б,г,д,з,ж,ђ,џ";
     final String bezZvucniKonsonanti = "p,k,t,s,š,ć,č,h,f,c,п,к,т,с,ш,ћ,ч,х,ф,ц";
-
-    Pismo p;
+    final String strujniSuglasnici = "z,s,ž,š,f,h,з,с,ж,ш,ф,х";
+    final String afrikateSuglasnici = "c,ć,č,dj,đ,dž,ц,ћ,ч,ђ,џ";
 
     private String rec;
     private String slovo;
     private StringBuilder recPodeljenaNaSlogove = new StringBuilder();
+
+    private Pismo p;
 
     public void setRec(String r) {
         this.rec = r;
@@ -70,6 +72,24 @@ public class Slog {
 
     public boolean isSamoglasnik(String s) {
         if (samoglasnici.indexOf(s.toLowerCase()) == -1) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    public boolean isStrujniSuglasnici(String s) {
+        if (strujniSuglasnici.indexOf(s.toLowerCase()) == -1) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    public boolean isAfrikateSuglasnici(String s) {
+        if (afrikateSuglasnici.indexOf(s.toLowerCase()) == -1) {
             return false;
         } else {
             return true;
@@ -169,8 +189,9 @@ public class Slog {
             if (t[i].length() >= 2) {
 
                 /*ukoliko su u slogu dve suglasnika jedan do drugog
-                 prebaci prvi suglasnik u prethodni slog za cirilicu*/
-                if (isSuglasnik(t[i].substring(0, 1)) && isSuglasnik(t[i].substring(1, 2)) && t[i].length() >= 3) {
+                 prebaci prvi suglasnik u prethodni slog */
+                if (isSuglasnik(t[i].substring(0, 1)) && isSuglasnik(t[i].substring(1, 2)) && t[i].length() >= 3
+                        && /*dodata dva uslova*/ !(isStrujniSuglasnici(t[i].substring(0, 1))) && !(isAfrikateSuglasnici(t[i].substring(0, 1)))) {
                     t[i - 1] = t[i - 1] + t[i].substring(0, 1);
                     t[i] = t[i].substring(1, t[i].length());
                 }
@@ -195,7 +216,8 @@ public class Slog {
 
         for (int i = 0; i < slogovi.length; i++) {
             if (slogovi[i].length() >= 3) {
-                if (isSuglasnik(slogovi[i].substring(0, 1)) && isSuglasnik(slogovi[i].substring(1, 2)) && isSuglasnik(slogovi[i].substring(2, 3))) {
+                if (isSuglasnik(slogovi[i].substring(0, 1)) && isSuglasnik(slogovi[i].substring(1, 2)) && isSuglasnik(slogovi[i].substring(2, 3))
+                        && /*dodata dva uslova*/ !(isStrujniSuglasnici(slogovi[i].substring(0, 1))) && !(isAfrikateSuglasnici(slogovi[i].substring(0, 1)))) {
                     if (isSlogotvorniSonati(slogovi[i].substring(0, 1))) {
                         slogovi[i] = slogovi[i].substring(0, 1) + "-" + slogovi[i].substring(1, slogovi[i].length() - 1);
                     } else if (isSlogotvorniSonati(slogovi[i].substring(1, 2))) {
@@ -218,11 +240,11 @@ public class Slog {
 
     }
 
-    //OSTAJE DA SE PROMENE ALGORITMI I DA SE IZBACI DUPLIRANJE KODA KOD LATINICE I CIRILICA
+    //OSTAJE DA SE PROMENE ALGORITMI 
     //KAKO BI SE OLAKSALE IZMENE I ODRZAVANJE
     //slovo r na pocetku sloga 
     private String slovoRnaPocetkuSloga(String a) {
-    //...
+        //...
 
         return a;
     }
