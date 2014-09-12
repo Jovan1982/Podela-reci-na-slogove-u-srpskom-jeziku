@@ -97,6 +97,14 @@ public class Slog {
         }
 
     }
+       public boolean isAfrikateSuglasniciOrisStrujniSuglasnici(String s) {
+        if (afrikateSuglasnici.indexOf(s.toLowerCase()) == -1 && strujniSuglasnici.indexOf(s.toLowerCase()) == -1) {
+            return false;
+        } else {
+            return true;
+        }
+
+    } 
 
     public boolean isSpecijalniSonati(String s) {
         if (specijalniSonati.indexOf(s.toLowerCase()) == -1) {
@@ -200,7 +208,7 @@ public class Slog {
 
                 /*ukoliko su u slogu dve suglasnika jedan do drugog
                  prebaci prvi suglasnik u prethodni slog */
-                if (isSuglasnik(t[i].substring(0, 1)) && isSuglasnik(t[i].substring(1, 2)) && t[i].length() >= 3) {
+                if (isSuglasnik(t[i].substring(0, 1)) && isSuglasnik(t[i].substring(1, 2)) && t[i].length() >= 3 && !(isAfrikateSuglasniciOrisStrujniSuglasnici(t[i].substring(0, 1)))) {
                     t[i - 1] = t[i - 1] + t[i].substring(0, 1);
                     t[i] = t[i].substring(1, t[i].length());
                 }
@@ -225,7 +233,7 @@ public class Slog {
 
         for (int i = 0; i < slogovi.length; i++) {
             if (slogovi[i].length() >= 3) {
-                if (isSuglasnik(slogovi[i].substring(0, 1)) && isSuglasnik(slogovi[i].substring(1, 2)) && isSuglasnik(slogovi[i].substring(2, 3))) {
+                if (isSuglasnik(slogovi[i].substring(0, 1)) && isSuglasnik(slogovi[i].substring(1, 2)) && isSuglasnik(slogovi[i].substring(2, 3)) && !(isAfrikateSuglasniciOrisStrujniSuglasnici(slogovi[i].substring(0, 1)))) {
                     if (isSlogotvorniSonati(slogovi[i].substring(0, 1))) {
                         slogovi[i] = slogovi[i].substring(0, 1) + "-" + slogovi[i].substring(1, slogovi[i].length() - 1);
                     } else if (isSlogotvorniSonati(slogovi[i].substring(1, 2))) {
