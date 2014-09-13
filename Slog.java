@@ -109,8 +109,13 @@ public class Slog {
     public boolean isBezZvucniKonsonantiL(String s) {
         return bezZvucniKonsonanti.contains(s.toLowerCase());
     }
-
-    public String podeliNaSlogovePoSamoglasnicima() {
+    
+    public String podeliNaSlogove()
+    {
+    return podeliNaSlogovePoSamoglasnicima();
+    }
+    
+    private String podeliNaSlogovePoSamoglasnicima() {
         /*
          prvobitna podela reci na slogove gde se rec
          na slogove deli samo po samoglasnicima
