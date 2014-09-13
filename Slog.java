@@ -115,7 +115,7 @@ public class Slog {
          prvobitna podela reci na slogove gde se rec
          na slogove deli samo po samoglasnicima
          */
-//ukoliko je rac od 3 slova ili manje nemoj je rastavljati vrati celu rec
+//ukoliko je rec od 3 slova ili manje nemoj je rastavljati vrati celu rec
         if (this.rec.length() <= 3) {
             return this.rec;
         }
@@ -146,14 +146,23 @@ public class Slog {
              postoje razdvojiti ih tako da ne budu u istom slogu*/
             if (t[i].length() >= 2) {
                 /*ukoliko su u slogu dve suglasnika jedan do drugog
-                 prebaci prvi suglasnik u prethodni slog */
+                 prebaci prvi suglasnik u prethodni slog osim ako nije neki od slucajeva oznacenih sa logicnim 'ne'-!()*/
                 if (isSuglasnik(t[i].substring(0, 1)) && isSuglasnik(t[i].substring(1, 2)) && t[i].length() >= 3) {
-                    if (!(isSpecijalniSonati(t[i].substring(1, 2)) && !isSonat(t[i].substring(0, 1)))) {
+                    //uvek je granica sloga ispred grupe suglasnika ako je na prvom mestu bilo koji suglasnik osim sonanta, a na drugom mestu sonanti. V, J, R, L, LJ:
+                    if (!(!isSonat(t[i].substring(0, 1)) && isSpecijalniSonati(t[i].substring(1, 2)))) {
                         //ako nije strujni ili sliveni na prvom mestu
-                        if (!isstrujniISliveniSuglasnici(t[i].substring(0, 1))) {
-                            t[i - 1] = t[i - 1] + t[i].substring(0, 1);
-                            t[i] = t[i].substring(1, t[i].length());
+
+                        //Uvek je granica ispred grupe suglasnika koju čine dva sonanta, a drugi je JE (kratak refleks JATA):čo-vjek
+                        if (!(isSonat(t[i].substring(0, 1)) && t[i].substring(1, 2).equalsIgnoreCase("j") && t[i].substring(2, 3).equalsIgnoreCase("e"))) {
+                            //uvek je granica sloga ispred grupe suglasnika koju čine strujni, afrikate ili neki drugi suglasnik:
+                            if (!isstrujniISliveniSuglasnici(t[i].substring(0, 1))) {
+
+                                t[i - 1] = t[i - 1] + t[i].substring(0, 1);
+                                t[i] = t[i].substring(1, t[i].length());
+
+                            }
                         }
+
                     }
                 }
             }
@@ -172,12 +181,13 @@ public class Slog {
         String povratniSlog = "";
         for (int i = 0; i < slogovi.length; i++) {
             if (slogovi[i].length() >= 3) {
+
                 if (isSuglasnik(slogovi[i].substring(0, 1)) && isSuglasnik(slogovi[i].substring(1, 2)) && isSuglasnik(slogovi[i].substring(2, 3))) {
                     if (isSlogotvorniSonati(slogovi[i].substring(0, 1))) {
                         slogovi[i] = slogovi[i].substring(0, 1) + "-" + slogovi[i].substring(1, slogovi[i].length());
                     } else if (isSlogotvorniSonati(slogovi[i].substring(1, 2))) {
                         slogovi[i] = slogovi[i].substring(0, 2) + "-" + slogovi[i].substring(2, slogovi[i].length());
-                    } else if (isSlogotvorniSonati(slogovi[i].substring(2, 3))) {
+                    } else if (isSlogotvorniSonati(slogovi[i].substring(2, 3)) && slogovi[i].length() >= 5) {
                         slogovi[i] = slogovi[i].substring(0, 3) + "-" + slogovi[i].substring(3, slogovi[i].length());
                     }
                 }
