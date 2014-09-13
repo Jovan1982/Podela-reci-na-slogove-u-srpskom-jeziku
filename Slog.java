@@ -5,7 +5,6 @@
  */
 package lang;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import static lang.Pismo.Cyr;
@@ -26,7 +25,9 @@ public class Slog {
     final List<String> bezZvucniKonsonanti = Arrays.asList("p", "k", "t", "s", "š", "ć", "č", "h", "f", "c", "п", "к", "т", "с", "ш", "ћ", "ч", "х", "ф", "ц");
     final List<String> strujniSuglasnici = Arrays.asList("z", "s", "ž", "š", "f", "h", "з", "с", "ж", "ш", "ф", "х");
     final List<String> afrikateSuglasnici = Arrays.asList("c", "ć", "č", "dj", "đ", "dž", "ц", "ћ", "ч", "ђ", "џ");
+    final List<String> strujniIsliveniSuglasnici = Arrays.asList("c", "ć", "č", "dj", "đ", "dž", "ц", "ћ", "ч", "ђ", "џ", "z", "s", "ž", "š", "f", "h", "з", "с", "ж", "ш", "ф", "х");
     final List<String> specijalniSonati = Arrays.asList("v", "j", "r", "l", "lj", "в", "ј", "р", "л", "љ");
+
     private String rec;
     private String slovo;
     private StringBuilder recPodeljenaNaSlogove = new StringBuilder();
@@ -77,8 +78,8 @@ public class Slog {
         return afrikateSuglasnici.contains(s.toLowerCase());
     }
 
-    public boolean isAfrikateSuglasniciORisStrujniSuglasnici(String s) {
-        return afrikateSuglasnici.contains(s.toLowerCase()) || strujniSuglasnici.contains(s.toLowerCase());
+    public boolean isstrujniISliveniSuglasnici(String s) {
+        return strujniIsliveniSuglasnici.contains(s.toLowerCase());
     }
 
     public boolean isSpecijalniSonati(String s) {
@@ -146,9 +147,14 @@ public class Slog {
             if (t[i].length() >= 2) {
                 /*ukoliko su u slogu dve suglasnika jedan do drugog
                  prebaci prvi suglasnik u prethodni slog */
-                if (isSuglasnik(t[i].substring(0, 1)) && isSuglasnik(t[i].substring(1, 2)) && t[i].length() >= 3) /*&& !(isSonat(t[i].substring(0, 1)) && isSonat(t[i].substring(1, 2)))*/ {
-                    t[i - 1] = t[i - 1] + t[i].substring(0, 1);
-                    t[i] = t[i].substring(1, t[i].length());
+                if (isSuglasnik(t[i].substring(0, 1)) && isSuglasnik(t[i].substring(1, 2)) && t[i].length() >= 3) {
+                    if (!(isSpecijalniSonati(t[i].substring(1, 2)) && !isSonat(t[i].substring(0, 1)))) {
+                        //ako nije strujni ili sliveni na prvom mestu
+                        if (!isstrujniISliveniSuglasnici(t[i].substring(0, 1))) {
+                            t[i - 1] = t[i - 1] + t[i].substring(0, 1);
+                            t[i] = t[i].substring(1, t[i].length());
+                        }
+                    }
                 }
             }
         }
@@ -183,13 +189,22 @@ public class Slog {
             }
         }
         povratniSlog = povratniSlog.replace("--", "-");
-        return povratniSlog;
+        return slovoRnaPocetkuSloga(povratniSlog);
     }
 
 //slovo r na pocetku sloga
-
     private String slovoRnaPocetkuSloga(String a) {
-//...
+        if (!a.substring(0, 1).toLowerCase().equals("r")) {
+            return a;
+        }
+
+        String[] slog = a.split("-");
+
+        if (slog[0].length() >= 3 && isSuglasnik(slog[0].substring(1, 2))) {
+            return a.substring(0, 1) + "-" + a.substring(1, a.length());
+        }
+
         return a;
+
     }
 }
