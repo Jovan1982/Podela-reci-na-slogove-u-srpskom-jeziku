@@ -10,7 +10,7 @@ import javax.swing.JOptionPane;
 
 /**
 *
-* @author jkrne
+* @author jkrneta
 */
 public class Lang {
 
@@ -32,7 +32,7 @@ String podeljeno="";
 
 Slog w= new Slog();
 w.setRec(rec);
-podeljeno= w.podeliNaSlogovePoSamoglasnicima();
+podeljeno= w.podeliNaSlogove();
 
 
 
