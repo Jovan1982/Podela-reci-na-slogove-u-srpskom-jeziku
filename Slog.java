@@ -32,14 +32,17 @@ public class Slog {
     private String slovo;
     private StringBuilder recPodeljenaNaSlogove = new StringBuilder();
     private Pismo p;
+    private PrevodiocPisma pre=new PrevodiocPisma();
 
     public void setRec(String r) {
 
         this.rec = r;
+        
         if (isCyrilic(this.rec)) {
             p = Cyr;
         } else {
             p = Lat;
+            this.rec=pre.prevediIzPismaUPismo(this.rec, Lat, Cyr);
         }
     }
 
@@ -112,6 +115,9 @@ public class Slog {
     
     public String podeliNaSlogove()
     {
+        if(this.p==Lat)
+            return pre.prevediIzPismaUPismo(podeliNaSlogovePoSamoglasnicima(), Cyr, Lat);
+        else
     return podeliNaSlogovePoSamoglasnicima();
     }
     
@@ -218,7 +224,8 @@ public class Slog {
         if (slog[0].length() >= 3 && isSuglasnik(slog[0].substring(1, 2))) {
             return a.substring(0, 1) + "-" + a.substring(1, a.length());
         }
-
+ 
+         
         return a;
 
     }
