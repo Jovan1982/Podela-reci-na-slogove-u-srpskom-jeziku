@@ -32,17 +32,19 @@ public class Slog {
     private String slovo;
     private StringBuilder recPodeljenaNaSlogove = new StringBuilder();
     private Pismo p;
-    private PrevodiocPisma pre=new PrevodiocPisma();
+    private PrevodiocPisma pre = new PrevodiocPisma();
 
     public void setRec(String r) {
 
         this.rec = r;
-        
+
         if (isCyrilic(this.rec)) {
             p = Cyr;
         } else {
             p = Lat;
-            this.rec=pre.prevediIzPismaUPismo(this.rec, Lat, Cyr);
+            //podela u slogove se vrsi u ćiriličnom pismu kako bi se izbegle komplikacije sa dvoslovnim slovima
+            //nakon podele na slogove opet se pri vraćanju rezultata pismo vraća u prvobitno
+            this.rec = pre.prevediIzPismaUPismo(this.rec, Lat, Cyr);
         }
     }
 
@@ -112,15 +114,16 @@ public class Slog {
     public boolean isBezZvucniKonsonantiL(String s) {
         return bezZvucniKonsonanti.contains(s.toLowerCase());
     }
-    
-    public String podeliNaSlogove()
-    {
-        if(this.p==Lat)
+
+    public String podeliNaSlogove() {
+        //ako je kao tekst za podelu bio u latinici on se kao takav i vraća korisniku
+        if (this.p == Lat) {
             return pre.prevediIzPismaUPismo(podeliNaSlogovePoSamoglasnicima(), Cyr, Lat);
-        else
-    return podeliNaSlogovePoSamoglasnicima();
+        } else {
+            return podeliNaSlogovePoSamoglasnicima();
+        }
     }
-    
+
     private String podeliNaSlogovePoSamoglasnicima() {
         /*
          prvobitna podela reci na slogove gde se rec
@@ -224,8 +227,7 @@ public class Slog {
         if (slog[0].length() >= 3 && isSuglasnik(slog[0].substring(1, 2))) {
             return a.substring(0, 1) + "-" + a.substring(1, a.length());
         }
- 
-         
+
         return a;
 
     }
