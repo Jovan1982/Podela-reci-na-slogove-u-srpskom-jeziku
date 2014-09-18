@@ -6,7 +6,11 @@
 package lang;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.*;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -30,7 +34,7 @@ public class AudioPlayer {
                             audioFormat);
             targetDataLine = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
 
-      //Create a thread to capture the microphone
+            //Create a thread to capture the microphone
             // data into an audio file and start the
             // thread running.  It will run until the
             // Stop button is clicked.  This method
@@ -43,7 +47,7 @@ public class AudioPlayer {
     }//end captureAudio method
 
     public void stopRecording() {
-  //Terminate the capturing of input data
+        //Terminate the capturing of input data
         // from the microphone.
         targetDataLine.stop();
         targetDataLine.close();
@@ -71,7 +75,25 @@ public class AudioPlayer {
         }
 
     }
-      //This method creates and returns an
+
+    public double getAudioWavFileTimeDuration(String fileToAnalyse) {
+        File file = new File(fileToAnalyse + ".wav");
+        AudioInputStream audioInputStream = null;
+        try {
+            audioInputStream = AudioSystem.getAudioInputStream(file);
+        } catch (UnsupportedAudioFileException ex) {
+            JOptionPane.showMessageDialog(null, "Tip fajla nije dozvoljen!");
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Pokušavate da analizitate nepostojeći fajl!!");
+        }
+        AudioFormat format = audioInputStream.getFormat();
+        long frames = audioInputStream.getFrameLength();
+        double durationInSeconds = (frames + 0.0) / format.getFrameRate();
+
+        return durationInSeconds;
+    }
+
+    //This method creates and returns an
     // AudioFormat object for a given set of format
     // parameters.  If these parameters don't work
     // well for you, try some of the other
@@ -102,7 +124,7 @@ public class AudioPlayer {
             AudioFileFormat.Type fileType = null;
             File audioFile = null;
 
-    //Set the file type and the file extension
+            //Set the file type and the file extension
       /*
              fileType = AudioFileFormat.Type.AIFC;
              audioFile = new File("junk.aifc");
