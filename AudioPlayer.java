@@ -5,10 +5,7 @@
  */
 package lang;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
 import javax.sound.sampled.*;
 
 /**
@@ -17,105 +14,123 @@ import javax.sound.sampled.*;
  */
 public class AudioPlayer {
 
-    ByteArrayOutputStream out;
-    protected boolean running;
+    AudioFormat audioFormat;
+    TargetDataLine targetDataLine;
+    String fileName;
+    String fileToPlay;
 
-    public void captureAudio() {
+    public void captureAudio(String fileName) {
+        this.fileName = fileName;
         try {
-            final AudioFormat format = getFormat();
-            DataLine.Info info = new DataLine.Info(
-                    TargetDataLine.class, format);
-            final TargetDataLine line = (TargetDataLine) AudioSystem.getLine(info);
-            line.open(format);
-            line.start();
-            Runnable runner = new Runnable() {
-                int bufferSize = (int) format.getSampleRate()
-                        * format.getFrameSize();
-                byte buffer[] = new byte[bufferSize];
+            //Get things set up for capture
+            audioFormat = getAudioFormat();
+            DataLine.Info dataLineInfo
+                    = new DataLine.Info(
+                            TargetDataLine.class,
+                            audioFormat);
+            targetDataLine = (TargetDataLine) AudioSystem.getLine(dataLineInfo);
 
-                public void run() {
-                    out = new ByteArrayOutputStream();
-                    running = true;
-                    try {
-                        while (running) {
-                            int count
-                                    = line.read(buffer, 0, buffer.length);
-                            if (count > 0) {
-                                out.write(buffer, 0, count);
-                            }
-                        }
-                        out.close();
-                    } catch (IOException e) {
-                        System.err.println("I/O problems: " + e);
-                        System.exit(-1);
+      //Create a thread to capture the microphone
+            // data into an audio file and start the
+            // thread running.  It will run until the
+            // Stop button is clicked.  This method
+            // will return after starting the thread.
+            new AudioPlayer.CaptureThread().start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
+        }//end catch
+    }//end captureAudio method
+
+    public void stopRecording() {
+  //Terminate the capturing of input data
+        // from the microphone.
+        targetDataLine.stop();
+        targetDataLine.close();
+
+    }
+
+    public void play(String fileToPlay) {
+        try {
+            File file = new File(fileToPlay + ".wav");
+            final Clip clip = (Clip) AudioSystem.getLine(new Line.Info(Clip.class));
+
+            clip.addLineListener(new LineListener() {
+                @Override
+                public void update(LineEvent event) {
+                    if (event.getType() == LineEvent.Type.STOP) {
+                        clip.close();
                     }
                 }
-            };
-            Thread captureThread = new Thread(runner);
-            captureThread.start();
-        } catch (LineUnavailableException e) {
-            System.err.println("Line unavailable: " + e);
-            System.exit(-2);
+            });
+
+            clip.open(AudioSystem.getAudioInputStream(file));
+            clip.start();
+        } catch (Exception exc) {
+            exc.printStackTrace(System.out);
         }
+
     }
-
-    public void stop() {
-        running = false;
-    }
-
-    public void playAudio() {
-        try {
-            byte audio[] = out.toByteArray();
-            InputStream input
-                    = new ByteArrayInputStream(audio);
-            final AudioFormat format = getFormat();
-            final AudioInputStream ais
-                    = new AudioInputStream(input, format,
-                            audio.length / format.getFrameSize());
-            DataLine.Info info = new DataLine.Info(
-                    SourceDataLine.class, format);
-            final SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
-            line.open(format);
-            line.start();
-
-            Runnable runner = new Runnable() {
-                int bufferSize = (int) format.getSampleRate()
-                        * format.getFrameSize();
-                byte buffer[] = new byte[bufferSize];
-
-                public void run() {
-                    try {
-                        int count;
-                        while ((count = ais.read(
-                                buffer, 0, buffer.length)) != -1) {
-                            if (count > 0) {
-                                line.write(buffer, 0, count);
-                            }
-                        }
-                        line.drain();
-                        line.close();
-                    } catch (IOException e) {
-                        System.err.println("I/O problems: " + e);
-                        System.exit(-3);
-                    }
-                }
-            };
-            Thread playThread = new Thread(runner);
-            playThread.start();
-        } catch (LineUnavailableException e) {
-            System.err.println("Line unavailable: " + e);
-            System.exit(-4);
-        }
-    }
-
-    private AudioFormat getFormat() {
-        float sampleRate = 8000;
-        int sampleSizeInBits = 8;
+      //This method creates and returns an
+    // AudioFormat object for a given set of format
+    // parameters.  If these parameters don't work
+    // well for you, try some of the other
+    // allowable parameter values, which are shown
+    // in comments following the declarations.
+    private AudioFormat getAudioFormat() {
+        float sampleRate = 8000.0F;
+        //8000,11025,16000,22050,44100
+        int sampleSizeInBits = 16;
+        //8,16
         int channels = 1;
+        //1,2
         boolean signed = true;
-        boolean bigEndian = true;
+        //true,false
+        boolean bigEndian = false;
+        //true,false
         return new AudioFormat(sampleRate,
-                sampleSizeInBits, channels, signed, bigEndian);
+                sampleSizeInBits,
+                channels,
+                signed,
+                bigEndian);
+    }//end getAudioFormat
+//=============================================//
+
+    class CaptureThread extends Thread {
+
+        public void run() {
+            AudioFileFormat.Type fileType = null;
+            File audioFile = null;
+
+    //Set the file type and the file extension
+      /*
+             fileType = AudioFileFormat.Type.AIFC;
+             audioFile = new File("junk.aifc");
+    
+             fileType = AudioFileFormat.Type.AIFF;
+             audioFile = new File("junk.aif");
+  
+             fileType = AudioFileFormat.Type.AU;
+             audioFile = new File("junk.au");
+   
+             fileType = AudioFileFormat.Type.SND;
+             audioFile = new File("junk.snd");
+             */
+            fileType = AudioFileFormat.Type.WAVE;
+            audioFile = new File(fileName + ".wav");
+
+            try {
+                targetDataLine.open(audioFormat);
+                targetDataLine.start();
+                AudioSystem.write(
+                        new AudioInputStream(targetDataLine),
+                        fileType,
+                        audioFile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }//end catch
+
+        }//end run
     }
 
 }
